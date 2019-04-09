@@ -4,7 +4,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2019-04-09T16:03:35Z",
+  "updated": "2019-04-09T16:37:04Z",
   "id": "edge-sso-adfs-nee",
   "duration": 0,
   "title": "Apigee Edge. Ops Labs. Advanced: Apigee Edge SSO with ADFS",
@@ -12,27 +12,15 @@
   "summary": "In this codelab, you'll install AIO Edge on-premises planet, configure ADFS for SAML authentication and a New Experience UI.",
   "theme": "web",
   "status": [
-    "draft"
+    "version 0.9"
   ],
   "category": [
     "Web"
   ],
   "tags": [
-    "cds17",
-    "chrome-dev-summit-2016",
-    "devfest18",
-    "gdd17",
-    "io2016",
-    "io2017",
-    "io2018",
-    "jsconfeu",
     "kiosk",
-    "pwa-dev-summit",
-    "pwa-roadshow",
-    "tag-web",
-    "typtwd17",
     "web"
   ],
-  "feedback": "https://github.com/googlecodelabs/your-first-pwapp/issues",
+  "feedback": "https://github.com/yuriylesyuk/alfa/issues",
   "url": "edge-sso-adfs-nee"
 }
