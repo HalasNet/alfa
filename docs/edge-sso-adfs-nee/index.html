@@ -27,7 +27,7 @@
                   environment="web"
                   feedback-link="https://github.com/yuriylesyuk/alfa/issues">
     
-      <google-codelab-step label="Introduction and Prerequisites" duration="0">
+      <google-codelab-step label="Introduction and Prerequisites" duration="3">
         <p>The lab is a collection of step-by-step tasks to:</p>
 <ul>
 <li>setup aio edge on GCP</li>
@@ -56,76 +56,88 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Part 1. Edge 1805 AIO Install" duration="0">
-        <p>1. Define useful environment variables at your workstation terminal window</p>
+      <google-codelab-step label="Part 1. Edge 19.01 AIO Install" duration="20">
+        <p>1. Open <a href="https://console.cloud.google.com/" target="_blank">https://console.cloud.google.com</a>. Click on Activate Cloud Shell button.</p>
+<p>2. Define useful environment variables at your workstation terminal window</p>
 <pre><code>export ZONE_ID=europe-west1-b
-export PROJECT_ID=prakashtest-174810
+export PROJECT_ID=&lt;your-project-id&gt;
 export APIGEE_SERVICE_ACCOUNT=apigee-sa
 export JUMPBOX=jumpbox
 
 gcloud config set compute/zone $ZONE_ID</code></pre>
-<p>2. Create service account for cluster management cluster</p>
+<p>3. Create service account for cluster management cluster</p>
 <p>For details: <a href="https://cloud.google.com/iam/docs/understanding-service-accounts" target="_blank">https://cloud.google.com/iam/docs/understanding-service-accounts</a></p>
-<p>NOTE: to delete instance</p>
+<aside class="special"><p><strong>NOTE:</strong> to delete instance</p>
 <p>gcloud compute instances delete jumpbox</p>
+</aside>
 <pre><code>gcloud iam service-accounts create $APIGEE_SERVICE_ACCOUNT --display-name &#34;Apigee Edge Service Account&#34;
 
- gcloud projects add-iam-policy-binding $PROJECT_ID --member=&#34;serviceAccount:$APIGEE_SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com&#34; --role=&#39;roles/iam.serviceAccountUser&#39;
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=&#34;serviceAccount:$APIGEE_SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com&#34; --role=&#39;roles/iam.serviceAccountUser&#39;
 
-????gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$APIGEE_SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com --role roles/compute.admin</code></pre>
-<p>3. Create jumpbox node we are going to use as Bastion Host</p>
+gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$APIGEE_SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com --role roles/compute.admin</code></pre>
+<p>4. Create jumpbox node we are going to use as Bastion Host</p>
 <p><a href="https://cloud.google.com/solutions/connecting-securely#bastion" target="_blank">https://cloud.google.com/solutions/connecting-securely#bastion</a></p>
 <pre><code>gcloud compute instances create $JUMPBOX --image-family=centos-7 --image-project=centos-cloud --scopes=cloud-platform --service-account=$APIGEE_SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com </code></pre>
-<p>4. ssh to jumpbox and define environment</p>
-<pre><code>gcloud compute ssh $JUMPBOX
-
-export PROJECT_ID=prakashtest-174810
+<p>5. If not yet, open Compute Engine/VM Instances menu in console and click on SSH Combo-box button to open ssh session to the jumpbox and define environment</p>
+<p class="image-container"><img style="width: 624.00px" src="img/2e93f40eab37f40a.png"></p>
+<aside class="special"><p><strong>NOTE:</strong> you can use gcloud compute ssh command in your terminal window as well:</p>
+<p><code>gcloud compute ssh $JUMPBOX</code></p>
+</aside>
+<p>6. Define environment variable in jumpbox session</p>
+<pre><code>export PROJECT_ID=&lt;your-project-id&gt;
 export ZONE_ID=europe-west1-b
 gcloud config set compute/zone $ZONE_ID</code></pre>
-<p>5. Create nodes for exco-aio and exco-nee nodes.</p>
+<p>7. Create nodes for all-in-one Apigee Edge OPDK instance, <code>exco-aio</code> and another node for New Edge Experience components, <code>exco-nee</code>.</p>
 <pre><code>gcloud compute instances create --image-family=centos-7 --image-project=centos-cloud --machine-type=n1-standard-4 --boot-disk-size=25GB exco-aio
 
 gcloud compute instances create --image-family=centos-7 --image-project=centos-cloud --machine-type=n1-standard-4 --boot-disk-size=25GB exco-nee</code></pre>
-<p>6. Setup ssh passwordless key for user edge, which is an identity we are going to use to manage nodes.</p>
-<pre><code>sudo yum -y jq mc
+<p>8. In the console, click on REFRESH button to Validate list of VM instances. </p>
+<p class="image-container"><img style="width: 624.00px" src="img/590e0ce31429857b.png"></p>
+<p>9. Setup ssh passwordless key for an admin user called  <code>edge</code>, which is an identity we are going to use to manage nodes.</p>
+<aside class="warning"><p>Correct expiry date timestamp appropriately below.</p>
+</aside>
+<pre><code>sudo yum install -y jq
 
 ssh-keygen -t rsa -f ~/.ssh/edge -C edge -q -N &#34;&#34;
 
 SSH_KEYS=`gcloud compute project-info describe --format=json | jq -r &#39;.commonInstanceMetadata.items[] | select( .key== &#34;ssh-keys&#34;) | .value&#39;`
 
-EDGE_SSH_KEY=`cat ~/.ssh/edge.pub | awk &#39;{print &#34;edge:&#34; $1 &#34; &#34; $2  &#34; google-ssh {\&#34;userName\&#34;:\&#34;edge\&#34;,\&#34;expireOn\&#34;:\&#34;2019-01-30T20:12:00+0000\&#34;}&#34;}&#39;`
+EDGE_SSH_KEY=`cat ~/.ssh/edge.pub | awk &#39;{print &#34;edge:&#34; $1 &#34; &#34; $2  &#34; google-ssh {\&#34;userName\&#34;:\&#34;edge\&#34;,\&#34;expireOn\&#34;:\&#34;2019-12-30T20:12:00+0000\&#34;}&#34;}&#39;`
                                                                                                                                                              
 gcloud compute project-info add-metadata  --no-user-output-enabled --metadata-from-file ssh-keys=&lt;( echo -e &#34;$SSH_KEYS\n$EDGE_SSH_KEY&#34; )</code></pre>
-<p>7. Add following line the <code>~/.ssh/config</code> file for the ssh passwordless configuration.</p>
+<p>11. In the Console, open Compute Engine/Metadata. Select SSH Keys tab and locate the key you just created.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/d4f8103c4932bdc8.png"></p>
+<p>11. Add following line the <code>~/.ssh/config</code> file for the ssh passwordless configuration.</p>
 <pre><code>Host exco-aio
     User edge
     IdentityFile ~/.ssh/edge
 Host exco-nee
     User edge
     IdentityFile ~/.ssh/edge</code></pre>
-<p>8. Set up <code>rw</code> for user only permissions on <code>~/.ssh/config</code></p>
+<p>11. Set up <code>rw</code> for user only permissions on <code>~/.ssh/config</code></p>
 <pre><code>sudo chmod 600 ~/.ssh/config</code></pre>
 <h2 is-upgraded>Set up Edge Classic at exco-aio</h2>
-<p>1. Ssh into exco-aio node</p>
+<p>1. Ssh into exco-aio node. Accept exco-aio node fingerprint.</p>
 <pre><code>ssh exco-aio </code></pre>
 <p>2. verify that hostname returns single IPv4 address</p>
 <pre><code>$ hostname -i 
 
-10.132.0.11</code></pre>
+10.132.0.3</code></pre>
 <p>3. Install utilities and setup apigee-install folder for user edge</p>
-<pre><code>sudo yum -y install mc nc wget
+<pre><code>sudo yum install -y mc nc wget
 
 sudo mkdir /opt/apigee-install
 sudo chown edge: /opt/apigee-install</code></pre>
-<aside class="warning"><p><strong>IMPORTANT: </strong>You shall have an access to the apigee rpm repositories and edge license file. </p>
+<aside class="warning"><p><strong>IMPORTANT: </strong>At this point you <strong>shall have </strong>an access to the apigee rpm repositories and edge license file. </p>
 </aside>
 <p>4. Copy license file and rpm repo credentials file to the <code>/opt/apigee-install</code> folder.  This is a sample contents:</p>
-<p><code>/opt/apigee-install/credentials.txt</code></p>
-<pre><code>User: &lt;repo-user&gt;
-Password: &lt;repo-password&gt;
-</code></pre>
-<p><code>/opt/apigee-install/license.txt</code></p>
-<pre><code>WI...
+<pre><code>cat /opt/apigee-install/credentials.txt
+
+User: &lt;repo-user&gt;
+Password: &lt;repo-password&gt;</code></pre>
+<pre><code>cat /opt/apigee-install/license.txt
+
+WI...
 ...
 ...Q==</code></pre>
 <p>5. Define silent config file <code>edge-aio.cfg</code></p>
@@ -171,27 +183,28 @@ VHOST_NAME=default
 VHOST_ALIAS=\${ORG_NAME}_\${ENV_NAME}.apigee.net
 USE_ALL_MPS=y
 EOT</code></pre>
-<p>7. Install Oracle JDK</p>
-<pre><code>wget --no-cookies --no-check-certificate --header &#34;Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie&#34; &#34;https://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u191-linux-x64.rpm&#34;
+<p>8. Install openjdk version 8. </p>
+<pre><code>sudo yum -y install java-1.8.0-openjdk
 
-sudo yum -y install jdk-8u191-linux-x64.rpm</code></pre>
+java -version</code></pre>
 <p>8. Temporarily reset SELinux into permissive mode</p>
 <pre><code>sudo setenforce 0</code></pre>
 <p>9. Bootstrap Edge and install apigee-setup</p>
-<pre><code>wget https://software.apigee.com/bootstrap_4.18.05.sh -O /opt/apigee-install/bootstrap_4.18.05.sh
+<pre><code>wget https://software.apigee.com/bootstrap_4.19.01.sh -O /opt/apigee-install/bootstrap_4.19.01.sh
 
 export REPO_CLIENT_ID=`awk &#39;/User:/{print $2}&#39; /opt/apigee-install/credentials.txt`
 export REPO_PASSWORD=`awk &#39;/Password:/{print $2}&#39; /opt/apigee-install/credentials.txt`
 
 
+sudo bash /opt/apigee-install/bootstrap_4.19.01.sh apigeeuser=$REPO_CLIENT_ID apigeepassword=$REPO_PASSWORD
 
-sudo bash /opt/apigee-install/bootstrap_4.18.05.sh apigeeuser=$REPO_CLIENT_ID apigeepassword=$REPO_PASSWORD
-
-sudo /opt/apigee/apigee-service/bin/apigee-service apigee-setup install
-
-sudo /opt/apigee/apigee-setup/bin/setup.sh -f /opt/apigee-install/edge-aio.cfg -p aio | tee /opt/apigee-install/edge-apigee-install-aio-`date -u +\&#34;%Y-%m-%dT%H:%M:%SZ\&#34;`.log</code></pre>
+sudo /opt/apigee/apigee-service/bin/apigee-service apigee-setup install</code></pre>
+<p>10. Install Edge aio using edge-aio.cfg silent config file</p>
+<pre><code>sudo /opt/apigee/apigee-setup/bin/setup.sh -f /opt/apigee-install/edge-aio.cfg -p aio | tee /opt/apigee-install/edge-apigee-install-aio-`date -u +\&#34;%Y-%m-%dT%H:%M:%SZ\&#34;`.log</code></pre>
 <p>10. Validate Edge AIO installation</p>
 <pre><code>/opt/apigee/apigee-service/bin/apigee-service apigee-validate install | tee /opt/apigee-install/edge-apigee-validate-install-`date -u +\&#34;%Y-%m-%dT%H:%M:%SZ\&#34;`.log
+
+/opt/apigee/apigee-service/bin/apigee-service apigee-validate install | tee /opt/apigee-install/edge-apigee-validate-setup-`date -u +\&#34;%Y-%m-%dT%H:%M:%SZ\&#34;`.log
 
 /opt/apigee/apigee-service/bin/apigee-service apigee-validate setup -f /opt/apigee-install/edge-aio.cfg | tee /opt/apigee-install/edge-apigee-validate-install-`date -u +\&#34;%Y-%m-%dT%H:%M:%SZ\&#34;`.log</code></pre>
 <p>11. Provision org and env</p>
@@ -200,7 +213,7 @@ sudo /opt/apigee/apigee-setup/bin/setup.sh -f /opt/apigee-install/edge-aio.cfg -
 
       </google-codelab-step>
     
-      <google-codelab-step label="Part 2. Set Up AD DC and  AD FS" duration="0">
+      <google-codelab-step label="Part 2. Set Up AD DC and  AD FS" duration="20">
         <p><strong>Reference Configuration Information:</strong></p>
 <p>Server Name: exco-adfs</p>
 <p>IP Address (ipconfig): 10.132.0.12 </p>
@@ -282,7 +295,7 @@ Install-ADDSForest `
 
       </google-codelab-step>
     
-      <google-codelab-step label="Set Up MS AD FS" duration="0">
+      <google-codelab-step label="Set Up MS AD FS" duration="20">
         <h2 is-upgraded>Install the AD FS Server Role</h2>
 <p>1. Open Server Manager and chose Manage; Add Roles and Features. Next</p>
 <p class="image-container"><img style="width: 165.66px" src="img/bc7ef8161003bd3e.png"></p>
@@ -298,7 +311,7 @@ Install-ADDSForest `
 
       </google-codelab-step>
     
-      <google-codelab-step label="Create Self-Signed Certificate" duration="0">
+      <google-codelab-step label="Create Self-Signed Certificate" duration="20">
         <p><strong>For Details</strong>, see: <a href="https://www.digicert.com/csr-creation-ssl-installation-ad-fs-windows-server-2012-iis8.htm" target="_blank">https://www.digicert.com/csr-creation-ssl-installation-ad-fs-windows-server-2012-iis8.htm</a></p>
 <p><a href="http://woshub.com/how-to-create-self-signed-certificate-with-powershell/" target="_blank">http://woshub.com/how-to-create-self-signed-certificate-with-powershell/</a></p>
 <p><a href="https://docs.microsoft.com/en-us/powershell/module/pkiclient/?view=win10-ps" target="_blank">https://docs.microsoft.com/en-us/powershell/module/pkiclient/?view=win10-ps</a></p>
@@ -327,7 +340,7 @@ A3B12D1E00AABA4EDC8A2CA27BCAA22A8F7920E0  CN=adfs.exco.com</code></pre>
 
       </google-codelab-step>
     
-      <google-codelab-step label="Post-Deployment Configuration" duration="0">
+      <google-codelab-step label="Post-Deployment Configuration" duration="20">
         <h2 is-upgraded>Add <code>apigee_sa</code> to the Domain Admins group</h2>
 <p>1. Open Tools/Active Directory Users and Computers of the Service Manager. Navigate to Exco.local/Users. </p>
 <p class="image-container"><img style="width: 439.65px" src="img/22c486cb44ca70b0.png"></p>
@@ -380,9 +393,10 @@ Add-KdsRootKey -EffectiveImmediately</code></pre>
 <pre><code>Guid
 ----
 4be76f4a-6306-dff3-b2cf-dce852dc4df3</code></pre>
-<p>TIP: If you get following error message:</p>
-<pre><code>Add-KDSRootKey : The request is not supported. (Exception from HRESULT: 0x80070032)... Exception from HRESULT: Microsoft.KeyDistributionService.Cmdlets.AddKDSRootKeyCommand</code></pre>
+<aside class="special"><p>TIP: If you get following error message:</p>
+<p><code>Add-KDSRootKey : The request is not supported. (Exception from HRESULT: 0x80070032)... Exception from HRESULT: Microsoft.KeyDistributionService.Cmdlets.AddKDSRootKeyCommand</code></p>
 <p>and the user you&#39;re executing shell is a Domain Admin, and you made er Domain Admin just right now, you might need to relogin your Windows session to activate membership changes. [Did I tell you to move to Linux?]</p>
+</aside>
 <h2 is-upgraded>Federation Service Configuration</h2>
 <p>1. In the Server Manager, in the Notifications list, click the message <strong>Configure the federation service on this server</strong>.</p>
 <p class="image-container"><img style="width: 293.50px" src="img/4a9bc4142158b7f8.png"></p>
@@ -428,7 +442,7 @@ Federation service will be configured to run as EXCO\adfs_sa$.</pre>
 
       </google-codelab-step>
     
-      <google-codelab-step label="AD FS Test SignOn" duration="0">
+      <google-codelab-step label="AD FS Test SignOn" duration="10">
         <p>1. Check status of the sign on page and enable it</p>
 <pre><code>PS C:\Windows\system32&gt; Get-AdfsProperties | Select-Object EnableIdpInitiatedSignonpage
 
@@ -502,8 +516,8 @@ The password never expires.</code></pre>
 
       </google-codelab-step>
     
-      <google-codelab-step label="Part 3. Install apigee-sso" duration="0">
-        <p><strong>For Details: </strong><a href="https://docs.apigee.com/private-cloud/v4.18.05/install-and-configure-edge-sso" target="_blank">https://docs.apigee.com/private-cloud/v4.18.05/install-and-configure-edge-sso</a></p>
+      <google-codelab-step label="Part 3. Install apigee-sso" duration="10">
+        <p><strong>For Details: </strong><a href="https://docs.apigee.com/private-cloud/v4.18.05/install-and-configure-edge-sso" target="_blank">https://docs.apigee.com/private-cloud/v4.19.01/install-and-configure-edge-sso</a></p>
 <h2 is-upgraded>Create the TLS keys and certificates</h2>
 <p>1. At the edge-aio node, create directory for PKI artifacts</p>
 <pre><code>sudo mkdir -p /opt/apigee/customer/application/apigee-sso/jwt-keys
@@ -717,9 +731,9 @@ gcloud compute firewall-rules create edge-sso-s --direction=INGRESS --priority=1
 <p>or curl:</p>
 <pre>curl http://10.132.0.10:9099/saml/metadata -o /opt/apigee-install/edge-sso-saml-metadata.xml</pre>
 <h2 is-upgraded>Configure apigee-sso for HTTPS access. Enable SSL_TERMINATION mode</h2>
-<p><strong>For Details</strong>, see: <a href="https://docs.apigee.com/private-cloud/v4.18.05/configure-apigee-sso-https-access" target="_blank">https://docs.apigee.com/private-cloud/v4.18.05/configure-apigee-sso-https-access</a></p>
+<p><strong>For Details</strong>, see: <a href="https://docs.apigee.com/private-cloud/v4.18.05/configure-apigee-sso-https-access" target="_blank">https://docs.apigee.com/private-cloud/v4.19.01/configure-apigee-sso-https-access</a></p>
 <p>1. Creating JKS file at the exco-aio node</p>
-<p><a href="https://docs.apigee.com/private-cloud/v4.18.05/configuring-ssl-edge-premises#creatingajksfile" target="_blank"><code>https://docs.apigee.com/private-cloud/v4.18.05/configuring-ssl-edge-premises#creatingajksfile</code></a></p>
+<p><a href="https://docs.apigee.com/private-cloud/v4.18.05/configuring-ssl-edge-premises#creatingajksfile" target="_blank"><code>https://docs.apigee.com/private-cloud/v4.19.01/configuring-ssl-edge-premises#creatingajksfile</code></a></p>
 <pre>cd /opt/apigee/customer/application/apigee-sso/saml/
 
 sudo openssl pkcs12 -export -clcerts -in edge-sso-server-cer.pem -inkey edge-sso-server-key-np.pem -out apigee-sso-keystore.pkcs12 -name sso
@@ -865,7 +879,7 @@ N2uH6qqsZSS4ZdnAYYZQDLF8hA==
 <p>2. Select Permit everyone policy and press Apply. </p>
 <p>3. Press OK to close the editor.</p>
 <h2 is-upgraded>Enable SAML on Edge UI</h2>
-<p><a href="https://docs.apigee.com/private-cloud/v4.18.05/enable-saml-edge-ui" target="_blank">https://docs.apigee.com/private-cloud/v4.18.05/enable-saml-edge-ui</a></p>
+<p><a href="https://docs.apigee.com/private-cloud/v4.18.05/enable-saml-edge-ui" target="_blank">https://docs.apigee.com/private-cloud/v4.19.01/enable-saml-edge-ui</a></p>
 <p>1. Add /etc/hosts entry for edge-sso.exco.com FQDN pointing at this node.</p>
 <pre>sudo vi /etc/hosts
 
@@ -992,8 +1006,8 @@ java.lang.IllegalArgumentException: invalid version format: ﾐ]Z^Uﾠ￩^G ;^D�
 
       </google-codelab-step>
     
-      <google-codelab-step label="Part 4. Installing the New Edge Experience (Beta)" duration="0">
-        <p><a href="https://docs.apigee.com/private-cloud/v4.18.05/installing-beta-release-edge-new-unified-experience" target="_blank">https://docs.apigee.com/private-cloud/v4.18.05/installing-beta-release-edge-new-unified-experience</a></p>
+      <google-codelab-step label="Part 4. Installing the New Edge Experience (Beta)" duration="10">
+        <p><a href="https://docs.apigee.com/private-cloud/v4.18.05/installing-beta-release-edge-new-unified-experience" target="_blank">https://docs.apigee.com/private-cloud/v4.19.01/installing-beta-release-edge-new-unified-experience</a></p>
 <p>Prerequisites:</p>
 <p>[ ] classic edge-ui with sso at exco-aio</p>
 <p>[ ] different node: exco-nee; 10.154.0.11</p>
@@ -1013,14 +1027,14 @@ sudo yum -y install jdk-8u191-linux-x64.rpm</pre>
 <p>4. Temporarily reset SELinux into permissive mode</p>
 <pre>sudo setenforce 0</pre>
 <p>5. Bootstrap Edge and install apigee-setup</p>
-<pre>wget https://software.apigee.com/bootstrap_4.18.05.sh -O /opt/apigee-install/bootstrap_4.18.05.sh
+<pre>wget https://software.apigee.com/bootstrap_4.19.01.sh -O /opt/apigee-install/bootstrap_4.19.01.sh
 
 export REPO_CLIENT_ID=`awk &#39;/User:/{print $2}&#39; /opt/apigee-install/credentials.txt`
 export REPO_PASSWORD=`awk &#39;/Password:/{print $2}&#39; /opt/apigee-install/credentials.txt`
 
 
 
-sudo bash /opt/apigee-install/bootstrap_4.18.05.sh apigeeuser=$REPO_CLIENT_ID apigeepassword=$REPO_PASSWORD
+sudo bash /opt/apigee-install/bootstrap_4.19.01.sh apigeeuser=$REPO_CLIENT_ID apigeepassword=$REPO_PASSWORD
 
 sudo /opt/apigee/apigee-service/bin/apigee-service apigee-setup install
 </pre>
@@ -1174,13 +1188,13 @@ SMTPMAILFROM=&#34;My Company myco@company.com&#34;
 <p><a href="https://golang.org/pkg/crypto/x509/" target="_blank">https://golang.org/pkg/crypto/x509/</a></p>
 <p># example</p>
 <p>export SSL_CERT_FILE=/opt/apigee/customer/application/apigee-sso/saml/edge-sso-server-cer.pem</p>
-<p>Edit some Edge 18.05 files to configure GO runtime truststore certificate so that Management UI can successfully connect to apigee-sso.</p>
+<p>Edit some Edge 19.01 files to configure GO runtime truststore certificate so that Management UI can successfully connect to apigee-sso.</p>
 <p>1. Add export env variable line to the export.sh script</p>
-<p><code>vi /opt/apigee/apigee-service-4.18.05-0.0.1354/lib/exports.sh</code></p>
+<p><code>vi /opt/apigee/apigee-service-4.19.01-0.0.1354/lib/exports.sh</code></p>
 <pre><code>export SSL_CERT_FILE
 </code></pre>
 <p>2. In the service-functions.sh script, add lines in the _dump_vars() and _infer_defaults() variables</p>
-<p><code>/opt/apigee/apigee-service-4.18.05-0.0.1354/lib/service-functions.sh</code></p>
+<p><code>/opt/apigee/apigee-service-4.19.01-0.0.1354/lib/service-functions.sh</code></p>
 <pre><code># 1
 _dump_vars()
 {
