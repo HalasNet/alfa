@@ -43,7 +43,7 @@
 <p>If you are a beginner in Linux Administration/Edge installation, it is recommended to get an access to the GCP project. If you know what you&#39;re doing, you can start with any 2  CentOs/RedHat nodes and a Windows box for AD/FS installation.</p>
 <p>You can also use this lab for installing SSO/NEE on top of existing Edge topology or  troubleshooting existing installation.</p>
 <aside class="warning"><p><strong>LINKS:</strong> Apigee troubleshooting page. Operations Guide</p>
-<p><a href="https://g3doc.corp.google.com/company/teams/edge/engDocs/services/sso/apigee-sso.md?cl=head" target="_blank">https://g3doc.corp.google.com/company/teams/edge/engDocs/services/sso/apigee-sso.md?cl=head</a></p>
+<p><a href="https://docs.apigee.com/api-platform/troubleshoot/troubleshooting-guide-pdf" target="_blank">https://docs.apigee.com/api-platform/troubleshoot/troubleshooting-guide-pdf</a></p>
 </aside>
 <h2 is-upgraded>Prerequisites:</h2>
 <ul>
@@ -67,7 +67,7 @@ export JUMPBOX=jumpbox
 gcloud config set compute/zone $ZONE_ID</code></pre>
 <p>3. Create service account for cluster management cluster</p>
 <p>For details: <a href="https://cloud.google.com/iam/docs/understanding-service-accounts" target="_blank">https://cloud.google.com/iam/docs/understanding-service-accounts</a></p>
-<aside class="special"><p><strong>NOTE:</strong> to delete instance</p>
+<aside class="special"><p><strong>NOTE:</strong> to delete instance:</p>
 <p>gcloud compute instances delete jumpbox</p>
 </aside>
 <pre><code>gcloud iam service-accounts create $APIGEE_SERVICE_ACCOUNT --display-name &#34;Apigee Edge Service Account&#34;
@@ -128,7 +128,7 @@ Host exco-nee
 
 sudo mkdir /opt/apigee-install
 sudo chown edge: /opt/apigee-install</code></pre>
-<aside class="warning"><p><strong>IMPORTANT: </strong>At this point you <strong>shall have </strong>an access to the apigee rpm repositories and edge license file. </p>
+<aside class="warning"><p><strong>IMPORTANT: </strong>At this point you <strong>shall have access</strong> to the apigee rpm repositories and edge license file. </p>
 </aside>
 <p>4. Copy license file and rpm repo credentials file to the <code>/opt/apigee-install</code> folder.  This is a sample contents:</p>
 <pre><code>cat /opt/apigee-install/credentials.txt
@@ -209,17 +209,6 @@ sudo /opt/apigee/apigee-service/bin/apigee-service apigee-setup install</code></
 /opt/apigee/apigee-service/bin/apigee-service apigee-validate setup -f /opt/apigee-install/edge-aio.cfg | tee /opt/apigee-install/edge-apigee-validate-install-`date -u +\&#34;%Y-%m-%dT%H:%M:%SZ\&#34;`.log</code></pre>
 <p>11. Provision org and env</p>
 <pre><code>/opt/apigee/apigee-service/bin/apigee-service apigee-provision setup-org -f /opt/apigee-install/edge-provision-org-env.cfg | tee /opt/apigee-install/edge-apigee-setup-org-install-`date -u +\&#34;%Y-%m-%dT%H:%M:%SZ\&#34;`.log</code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Part 2. Set Up AD DC and  AD FS" duration="20">
-        <p><strong>Reference Configuration Information:</strong></p>
-<p>Server Name: exco-adfs</p>
-<p>IP Address (ipconfig): 10.132.0.12 </p>
-<p>AD Forest: Exco.local</p>
-<p>Federation Service Name: adfs.exco.com</p>
-<p>DSRM Password: Apigee123!</p>
 <h2 is-upgraded>Provisioning Windows Server</h2>
 <p>1.  Provision Windows Server 2016 instance exco-adfs</p>
 <pre><code>gcloud beta compute --project=$PROJECT_ID instances create exco-adfs --zone=$ZONE_ID --machine-type=n1-standard-2 --image=windows-server-2016-dc-v20181211 --image-project=windows-cloud --boot-disk-size=50GB --boot-disk-type=pd-standard --boot-disk-device-name=exco-adfs</code></pre>
@@ -231,6 +220,20 @@ sudo /opt/apigee/apigee-service/bin/apigee-service apigee-setup install</code></
 <p class="image-container"><img style="width: 208.50px" src="img/2cce24bd9031606c.png"></p>
 <p class="image-container"><img style="width: 205.99px" src="img/9c564be628711f06.png"></p>
 <p>4. Log into exco-adfs box, double-click at the exco-adfs desktop entry.</p>
+<p>5. In a browser, open Edge UI URL and use <a href="mailto:admin@exco.com" target="_blank">admin@exco.com</a>:Apigee123 credentials to log in.</p>
+<p>http://10.132.0.3:9000</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Part 2. Set Up AD DC and  AD FS" duration="20">
+        <p><strong>Reference Configuration Information:</strong></p>
+<p>Server Name: exco-adfs</p>
+<p>IP Address (ipconfig): 10.132.0.12 </p>
+<p>AD Forest: Exco.local</p>
+<p>Federation Service Name: adfs.exco.com</p>
+<p>DSRM Password: Apigee123!</p>
+<p>1. Log into exco-adfs box, double-click at the exco-adfs desktop entry.</p>
 <h2 is-upgraded>Installing the AD FS role</h2>
 <p>1. Using Server Manager. Dashboard open Add roles and features Wizard</p>
 <p>2. Check <img style="width: 126.59px" src="img/366bd2e9a395314.png">checkbox and press Next.</p>
