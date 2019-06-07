@@ -2,7 +2,8 @@
 
 
 List of Labs
-* [edge-sso-adfs-nee](./docs/edge-sso-adfs-nee/index.html)
+* [edge-ops-router-tls](https://yuriylesyuk.github.io/alfa/edge-ops-router-tls)
+* [edge-sso-adfs-nee](https://yuriylesyuk.github.io/alfa/edge-sso-adfs-nee)
 
 
 
