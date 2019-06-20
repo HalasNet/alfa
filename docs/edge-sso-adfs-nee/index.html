@@ -538,7 +538,7 @@ sudo mkdir -p /opt/apigee/customer/application/apigee-sso/saml/
 sudo chown apigee: /opt/apigee/customer/application/apigee-sso/saml
 cd /opt/apigee/customer/application/apigee-sso/saml/
 
-sudo openssl genrsa -aes256 -out edge-sso-server-key.pem 1024
+sudo openssl genrsa -aes256 -out edge-sso-server-key.pem 2048
 # password: Apigee123!</code></pre>
 <p>2. Strip passphrase from the private key file</p>
 <pre><code>sudo openssl rsa -in edge-sso-server-key.pem -out edge-sso-server-key-np.pem </code></pre>
@@ -936,7 +936,6 @@ EDGEUI_SSO_CLIENT_OVERWRITE=y
 <p>curl -k -s -i -d grant_type=client_credentials https://edge-sso.exco.com:9443/oauth/token -H &#39;Content-Type: application/x-www-form-urlencoded;charset=utf-8&#39; -H &#39;accept: application/json;charset=utf-8&#39; -H &#39;Authorization: Basic c3NvYWRtaW46QXBpZ2VlMTIzIQ==&#39; -v</p>
 <p>* check for /etc/hosts, as at this point we are using FQDN</p>
 <h3 is-upgraded>Configure Edge UI to support self-signed certs with Edge SSO</h3>
-<p><a href="https://b.corp.google.com/issues/68853668" target="_blank">https://b.corp.google.com/issues/68853668</a></p>
 <p>1. Edge UI</p>
 <p><code>sudo vi /opt/apigee/edge-ui/conf/source/application.conf </code></p>
 <pre><code>play.ws.ssl {
