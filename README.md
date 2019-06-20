@@ -23,4 +23,3 @@ and is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file.
 
 This is a community supported project. There is no warranty for this code.
 If you have problems or questions, ask on [commmunity.apigee.com](https://community.apigee.com).
-
