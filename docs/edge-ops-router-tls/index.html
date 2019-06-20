@@ -25,7 +25,7 @@
                   id="edge-ops-router-tls"
                   title="Edge Ops Training. Router 1-Way TLS Configuration"
                   environment="web"
-                  feedback-link="https://github.com/yuriylesyuk/alfa/issues/new?title=[apigee-ops-training-router-tls]:&amp;labels[]=content-platform&amp;labels[]=apigee">
+                  feedback-link="https://github.com/apigee/alfa/issues/new?title=[apigee-ops-training-router-tls]:&amp;labels[]=content-platform&amp;labels[]=apigee">
     
       <google-codelab-step label="Introduction and VHost Layout" duration="2">
         <p>This Codelab guides you through the hands-on experience of generating self-signed certificates and its deployment into the VHost object of Apigee Edge.</p>
@@ -305,6 +305,18 @@ jar -uf traininglabKeystore.jar META-INF/descriptor.properties</pre>
 
       </google-codelab-step>
     
+      <google-codelab-step label="Configure .netrc for curl" duration="2">
+        <p>1. Configure the contents of <code>~/.netrc</code> file so that you can use -n curl option</p>
+<p>Enter use IP of your MS node, email and password of Edge administrator.</p>
+<pre>machine 52.55.223.129 login admin@exco.com password Apigee123!</pre>
+<p>2. Verify that you can execute MS Management API calls by fetching the list of planet organisations.</p>
+<pre>$ curl -n http://10.132.0.9:8080/v1/o 
+
+[ &#34;VALIDATE&#34;, &#34;org&#34; ]</pre>
+
+
+      </google-codelab-step>
+    
       <google-codelab-step label="Create the keystore and upload the JAR file" duration="8">
         <p>1. Create the keystore object</p>
 <pre>curl -H &#34;Content-Type: text/xml&#34; http://52.55.223.129:8080/v1/o/traininglab/environments/prod/keystores -d &#34;&lt;KeyStore name=\&#34;traininglab\&#34;/&gt;&#34; -n</pre>
@@ -319,6 +331,8 @@ jar -uf traininglabKeystore.jar META-INF/descriptor.properties</pre>
 <p>Output:</p>
 <pre><code>[ &#34;traininglab&#34; ]</code></pre>
 <p>3. Upload a JAR file to a Keystore API</p>
+<aside class="special"><p><strong>NOTE: </strong>as we are using relative reference to the keystore .jar file, you need to execute this command while in the <code>rootca/server-certs/traininglabKeystore</code> folder. </p>
+</aside>
 <pre>curl -X POST -H &#34;Content-Type: multipart/form-data&#34; -F file=&#34;@traininglabKeystore.jar&#34; &#34;http://52.55.223.129:8080/v1/o/traininglab/environments/prod/keystores/traininglab/keys?alias=traininglab-vhost&amp;password=TrainingLab2017&#34; -n</pre>
 <p>4. Verify the keystore</p>
 <pre>curl http://52.55.223.129:8080/v1/o/traininglab/environments/prod/keystores/traininglab -n</pre>
@@ -338,7 +352,7 @@ jar -uf traininglabKeystore.jar META-INF/descriptor.properties</pre>
     
       <google-codelab-step label="Create Virtual Host" duration="5">
         <p>1. Create Virtual Host using Management API command.</p>
-<pre>curl -X POST  -H &#34;Content-Type: application/json&#34; -H &#34;Authorization: Basic b3Bka0BhcGlnZWUuY29tOkFwaWdlZTEyMyE=&#34; -d &#39;{
+<pre>curl -n -X POST  -H &#34;Content-Type: application/json&#34; -d &#39;{
   &#34;hostAliases&#34;: [
     &#34;api.traininglab.com&#34;
   ],
@@ -403,7 +417,7 @@ jar -uf traininglabKeystore.jar META-INF/descriptor.properties</pre>
 </aside>
 <aside class="special"><p><strong>NOTE</strong>: Windows users, edit <code>C:\Windows\System32\Drivers\etc\hosts</code> file.</p>
 </aside>
-<p>2. Check the connection, run ping api.traininglab.com</p>
+<p>2. Check the connection, run <code>ping api.traininglab.com</code></p>
 <pre><code>$ ping api.traininglab.com
 PING api.traininglab.com (34.207.96.3): 56 data bytes
 64 bytes from 34.207.96.3: icmp_seq=0 ttl=64 time=0.047 ms
@@ -427,6 +441,8 @@ curl: (60) SSL certificate problem: Invalid certificate chain
 More details here: https://curl.haxx.se/docs/sslcerts.html</code></pre>
 <p>2. Provide trust certificate chain to validate our server certificate.</p>
 <pre><code>$ curl --cacert ca-certs/rootca-crt.pem -v https://api.traininglab.com:9005/echo
+
+
 *   Trying 34.207.96.3...
 * TCP_NODELAY set
 * Connected to api.traininglab.com (34.207.96.3) port 9005 (#0)
@@ -460,7 +476,7 @@ bash-3.2$ </code></pre>
       <google-codelab-step label="Using SSC on OS Level" duration="10">
         <p>1. Using Chrome, try to hit the echo proxy.</p>
 <p class="image-container"><img style="width: 624.00px" src="img/6c0926bffc01e097.png"></p>
-<h3 is-upgraded>Configuring Machine to Trust the Self-Signed Certificate</h3>
+<h2 is-upgraded>Configuring Machine to Trust the Self-Signed Certificate</h2>
 <aside class="special"><p><strong>NOTE</strong>: PEM certificates usually have extensions such as .pem, .crt, .cer, and .key. They are Base64 encoded ASCII files and contain &#34;<code>-----BEGIN CERTIFICATE-----</code>&#34; and &#34;<code>-----END CERTIFICATE-----</code>&#34; statements. Server certificates, intermediate certificates, and private keys can all be put into the PEM format.</p>
 </aside>
 <h2 is-upgraded>Mac OSX: Using Apple Keychain Access to register CA Trust certificate</h2>
@@ -483,7 +499,7 @@ bash-3.2$ </code></pre>
 <p>8. Press Next and Finish.</p>
 <p>9. Important: This is a dialog that you agree that your computer Certificate Manager will trust any  certificates, signed by this CA certificate. Click Yes.</p>
 <p>From now on any certificate signed by our CA will be trusted on this computer.</p>
-<h3 is-upgraded>Validating SSC in OS using Chrome</h3>
+<h2 is-upgraded>Validating SSC in OS using Chrome</h2>
 <p>1. Using Chrome when our root ca certificate is &#39;Always Trusted:</p>
 <p class="image-container"><img style="width: 624.00px" src="img/c180d0cc07ee16fa.png"></p>
 <p>2. We can display and validate a certificate presented by a server using following openssl command:</p>

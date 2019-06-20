@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2019-06-20T11:05:36Z",
+  "updated": "2019-06-20T13:12:14Z",
   "id": "edge-sso-adfs-nee",
   "duration": 133,
   "title": "Apigee Edge. Ops Labs. Advanced: Apigee Edge SSO with ADFS",
@@ -21,6 +21,6 @@
     "kiosk",
     "web"
   ],
-  "feedback": "https://github.com/yuriylesyuk/alfa/issues",
+  "feedback": "https://github.com/apigee/alfa/issues",
   "url": "edge-sso-adfs-nee"
 }

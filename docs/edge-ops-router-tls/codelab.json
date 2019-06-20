@@ -1,15 +1,15 @@
 {
   "environment": "web",
-  "source": "1Mny-ixrX8j45jpNZUtzXUA7z23sFcdfYPoS9G1liC0g",
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2019-06-07T12:51:52Z",
+  "updated": "2019-06-20T13:16:02Z",
   "id": "edge-ops-router-tls",
-  "duration": 61,
+  "duration": 63,
   "title": "Edge Ops Training. Router 1-Way TLS Configuration",
   "authors": "yuriyl@google.com",
   "summary": "The lab teaches you how to set up a TLS certificate for an Apigee Edge Router/Virtual Host",
+  "source": "1Mny-ixrX8j45jpNZUtzXUA7z23sFcdfYPoS9G1liC0g",
   "theme": "apigee",
   "status": [
     "staged"
@@ -21,7 +21,7 @@
     "kiosk",
     "web"
   ],
-  "feedback": "https://github.com/yuriylesyuk/alfa/issues/new?title=[apigee-ops-training-router-tls]:\u0026labels[]=content-platform\u0026labels[]=apigee",
+  "feedback": "https://github.com/apigee/alfa/issues/new?title=[apigee-ops-training-router-tls]:\u0026labels[]=content-platform\u0026labels[]=apigee",
   "ga": "UA-########-#",
   "url": "edge-ops-router-tls"
 }
