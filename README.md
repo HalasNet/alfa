@@ -2,10 +2,10 @@
 
 
 List of Labs
-* [edge-dev-javacallout](https://yuriylesyuk.github.io/alfa/edge-ops-router-tls)
+* [edge-dev-javacallout](https://apigee.github.io/alfa/edge-ops-router-tls)
 
-* [edge-ops-router-tls](https://yuriylesyuk.github.io/alfa/edge-ops-router-tls)
-* [edge-sso-adfs-nee](https://yuriylesyuk.github.io/alfa/edge-sso-adfs-nee)
+* [edge-ops-router-tls](https://apigee.github.io/alfa/edge-ops-router-tls)
+* [edge-sso-adfs-nee](https://apigee.github.io/alfa/edge-sso-adfs-nee)
 
 
 
