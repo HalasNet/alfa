@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2019-06-20T13:16:02Z",
+  "updated": "2019-07-02T18:23:31Z",
   "id": "edge-ops-router-tls",
   "duration": 63,
   "title": "Edge Ops Training. Router 1-Way TLS Configuration",
@@ -22,6 +22,6 @@
     "web"
   ],
   "feedback": "https://github.com/apigee/alfa/issues/new?title=[apigee-ops-training-router-tls]:\u0026labels[]=content-platform\u0026labels[]=apigee",
-  "ga": "UA-########-#",
+  "ga": "UA-143092999-1",
   "url": "edge-ops-router-tls"
 }

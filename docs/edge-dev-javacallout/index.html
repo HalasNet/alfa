@@ -21,7 +21,7 @@
 </head>
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
-  <google-codelab codelab-gaid="UA-143076075-1"
+  <google-codelab codelab-gaid="UA-143092999-1"
                   id="edge-dev-javacallout"
                   title="JSON Sanitizer Java Callout Policy"
                   environment="web"
@@ -36,6 +36,7 @@
 <li>Java Code that implements OWASP JSON Sanitizer module.</li>
 <li>Echo proxy that returns back passed Headers and Body</li>
 <li>JSON datagram sanitized by the policy</li>
+<li>Remote Debugging of Java Callout</li>
 </ul>
 <h2 is-upgraded>Prerequisites</h2>
 <ul>
@@ -277,19 +278,30 @@ public class JsonSanitizerCalloutTest {
     
       <google-codelab-step label="Package the json-sanitizer Project" duration="5">
         <p>1. In the <code>pom.xml</code> file add section to package the jar file with dependencies</p>
-<pre><code>    &lt;build&gt;
-        &lt;plugins&gt;
-            &lt;plugin&gt;
-                &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
-                &lt;version&gt;2.5.5&lt;/version&gt;
-                &lt;configuration&gt;
-                    &lt;descriptorRefs&gt;
-                        &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
-                    &lt;/descriptorRefs&gt;
-                &lt;/configuration&gt;
-            &lt;/plugin&gt;
-        &lt;/plugins&gt;
-    &lt;/build&gt;</code></pre>
+<pre><code>        &lt;build&gt;
+                &lt;finalName&gt;${artifactId}-${version}&lt;/finalName&gt;
+                &lt;plugins&gt;
+                        &lt;plugin&gt;
+                                &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+                                &lt;version&gt;2.6&lt;/version&gt;
+                                &lt;configuration&gt;
+                                        &lt;descriptorRefs&gt;
+                                                &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
+                                        &lt;/descriptorRefs&gt;
+                                        &lt;appendAssemblyId&gt;false&lt;/appendAssemblyId&gt;
+                                &lt;/configuration&gt;
+                                &lt;executions&gt;
+                                        &lt;execution&gt;
+                                                &lt;id&gt;make-assembly&lt;/id&gt;
+                                                &lt;phase&gt;package&lt;/phase&gt;
+                                                &lt;goals&gt;
+                                                        &lt;goal&gt;single&lt;/goal&gt;
+                                                &lt;/goals&gt;
+                                        &lt;/execution&gt;
+                                &lt;/executions&gt;
+                        &lt;/plugin&gt;
+                &lt;/plugins&gt;
+        &lt;/build&gt;</code></pre>
 <p>2. Right-click the project and choose <strong>Run As/Maven Build...</strong></p>
 <p>3. Give it a nice name: <code>json-sanitizer-callout</code> package.</p>
 <p>4. Enter <code>package</code> as a goal into the <strong>Goals</strong> field.</p>
@@ -371,6 +383,52 @@ public class JsonSanitizerCalloutTest {
 <pre>{&#34;xx&#34;:&#34;
 &lt;script&gt;alert(1)&lt;\/script&gt;&#34;, &#34;yy&#34;: &#34;yyy&#34;,&#34;ar&#34;:[0,null,2]}</pre>
 <p class="image-container"><img style="width: 498.51px" src="img/c3c5969fb088882f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="OPDK: Remote Debugging of Java Callout" duration="10">
+        <p>Unless your Java Callout contains a couple of lines, it is good to be able to debug it.  Mocking permits you conveniently debug most if not all code with your local development environment. Saying that, it is important to be able to debug a callout in context of a real Message Processor. Java remote debugging facility permits you to do this. Of course, you need an access to an OPDK environment to be able to reconfigure Message Processor JVM process. Usually, All-In-One installation of Edge provides perfect isolated development environment.</p>
+<h2 is-upgraded>Turning On JVM Debug Mode</h2>
+<p>1. On an MP node, <code>add debug_port=8000</code> by editing or creating <code>message-processor.properties</code> file</p>
+<pre># vi /opt/apigee/customer/application message-processor.properties
+
+debug_port=8000</pre>
+<p>2. Restart MP component</p>
+<pre>apigee-service edge-message-processor restart</pre>
+<p>3. Verify that debug setting is activated. Look for the <code>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,a</code></p>
+<p><code>ddress=8000 signature.</code></p>
+<pre># ps -eaf|grep 8000
+
+apigee    4224     1  0 07:30 ?        00:04:23 /usr/lib/jvm/jre/bin/java -classpath /opt............var/log/edge-message-processor -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,a
+ddress=8000 com.apigee.kernel.MicroKernel
+</pre>
+<p>This setting provides you with an ability to attach and detach to a process under debugging at any point of time.</p>
+<h2 is-upgraded>Setting up Debugging Configuration</h2>
+<p>1. In the <strong>Eclipse</strong>, select <strong>Run/Debug Configurations...</strong> menu item. </p>
+<p>2. In the left-side pane, select <strong>Remote Java Application</strong> line.</p>
+<p>3. Right-click it and choose <strong>New Configuration</strong> context-menu item.</p>
+<p>4. Enter <code>java-sanitizer-callout</code> as Name.</p>
+<p>5. Click on <strong>Browse...</strong> button in the <strong>Project</strong> section and select <code>java-sanitizer-callout</code> project.</p>
+<p>6. In the <strong>Connection Properties</strong> section enter IP address of your MP node and port <code>8000</code>.</p>
+<p class="image-container"><img style="width: 266.50px" src="img/2d7057956fbf51.png"></p>
+<p>7. Click <strong>Apply</strong> and <strong>Close</strong>.</p>
+<h2 is-upgraded>Remote Debugging Session</h2>
+<p>1. In the <code>JsonSanitizerCallout.java</code> file, double-click on line 22 gutter to flip a breakpoint.</p>
+<p class="image-container"><img style="width: 448.50px" src="img/a650b515eb1c0e09.png"></p>
+<p>2. Select <strong>Run/Debug Configuration...</strong> menu item. </p>
+<p>3. Select <strong>Remote Java Application/java-sanitizer-callout</strong> configuration at the left side of the dialog.</p>
+<p>4. Click <strong>Debug</strong> button to initiate remote debug session.</p>
+<p>The Eclipse will switch to the <strong>Debug Perspective</strong> and attach itself to the running Message Processor instance. You will see all threads of MP&#39;s JVM.</p>
+<p class="image-container"><img style="width: 224.50px" src="img/6bd5b686d1b01bed.png"></p>
+<p>5. Initiate an http request to the <strong>json-sanitizer proxy</strong>.</p>
+<p>You are stopped at the breakpoint and can inspect any variables of the current state.</p>
+<p class="image-container"><img style="width: 602.00px" src="img/a3ea98c250e71186.png"></p>
+<p>6. Click at the <strong>Step Into (F5)</strong>, <strong>Step Over(F6)</strong>, or <strong>Resume (F8)</strong> button to continue execution.</p>
+<p>7. The request processing is continued as appropriate.</p>
+<p>8. Select <strong>Run/Disconnect</strong> menu item to detach the remote debugger from the live process.</p>
+<aside class="warning"><p>Do not forget to remove or comment out debug_port=8000 and restart MP after you finish your debugging.</p>
+</aside>
 
 
       </google-codelab-step>

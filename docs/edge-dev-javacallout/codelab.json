@@ -3,9 +3,9 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2019-07-01T14:31:01Z",
+  "updated": "2019-07-02T18:26:51Z",
   "id": "edge-dev-javacallout",
-  "duration": 43,
+  "duration": 53,
   "title": "JSON Sanitizer Java Callout Policy",
   "authors": "yuriyl@google.com",
   "summary": "The Codelab walks you through the experience of creating an Edge Java Callout for end-to-end experience using Eclipse as an IDE.",
@@ -22,6 +22,6 @@
     "web"
   ],
   "feedback": "https://github.com/apigee/alfa/issues/new?title=[edge-dev-javacallout]:\u0026labels[]=content-platform\u0026labels[]=apigee",
-  "ga": "UA-143076075-1",
+  "ga": "UA-143092999-1",
   "url": "edge-dev-javacallout"
 }

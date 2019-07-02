@@ -21,11 +21,11 @@
 </head>
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
-  <google-codelab codelab-gaid=""
+  <google-codelab codelab-gaid="UA-143092999-1"
                   id="edge-sso-adfs-nee"
                   title="Apigee Edge. Ops Labs. Advanced: Apigee Edge SSO with ADFS"
                   environment="web"
-                  feedback-link="https://github.com/apigee/alfa/issues">
+                  feedback-link="https://github.com/apigee/alfa/issues/new?title=[edge-sso-adfs-nee]:&amp;labels[]=content-platform&amp;labels[]=apigee">
     
       <google-codelab-step label="Introduction and Prerequisites" duration="3">
         <p>The lab is a collection of step-by-step tasks to:</p>
@@ -119,7 +119,11 @@ Host exco-nee
 <h2 is-upgraded>Set up Edge Classic at exco-aio</h2>
 <p>1. Ssh into exco-aio node. Accept exco-aio node fingerprint.</p>
 <pre><code>ssh exco-aio </code></pre>
-<p>2. verify that hostname returns single IPv4 address</p>
+<p>Sync point. Verify that you are user <code>edge</code> at node <code>exco-aio</code>:</p>
+<pre>[yuriyl@jumpbox ~]$ ssh exco-aio
+Last login: Fri Jan 18 17:11:17 2019 from jumpbox.c.&lt;project-id&gt;.internal
+[edge@exco-aio ~]$</pre>
+<p>2. Verify that hostname returns single IPv4 address</p>
 <pre><code>$ hostname -i 
 
 10.132.0.3</code></pre>

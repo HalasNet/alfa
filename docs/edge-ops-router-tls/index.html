@@ -21,14 +21,22 @@
 </head>
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
-  <google-codelab codelab-gaid="UA-########-#"
+  <google-codelab codelab-gaid="UA-143092999-1"
                   id="edge-ops-router-tls"
                   title="Edge Ops Training. Router 1-Way TLS Configuration"
                   environment="web"
                   feedback-link="https://github.com/apigee/alfa/issues/new?title=[apigee-ops-training-router-tls]:&amp;labels[]=content-platform&amp;labels[]=apigee">
     
       <google-codelab-step label="Introduction and VHost Layout" duration="2">
-        <p>This Codelab guides you through the hands-on experience of generating self-signed certificates and its deployment into the VHost object of Apigee Edge.</p>
+        <p>The Lab will walk you through the following tasks:</p>
+<ul>
+<li>Create Certificate Authority</li>
+<li>Generate Server&#39;s Private Key, Certificate request, and Sign Public Key</li>
+<li>Edge Key Store</li>
+<li>Create and configure Virtual Host</li>
+<li>Using curl to send 1wTLS requests</li>
+</ul>
+<p>This Codelab guides you through the hands-on experience of generating self-signed certificates and its deployment into the VHost object of Apigee Edge.</p>
 <p>Even that this lab is tailored to an On-premises Edge installation, it is applicable to Apigee Cloud as well.</p>
 <p>We assume that traininglab organization that has prod environment are provisioned and that two virtual hosts are created in the prod environment:</p>
 <table>
@@ -197,7 +205,7 @@ admin@mockserver.com [admin@mockserver.com]:</pre>
     
       <google-codelab-step label="As Edge Admin: Create private key and certificate request" duration="5">
         <aside class="warning"><p><strong>NOTE</strong>: <code>NET::ERR_CERT_COMMON_NAME_INVALID</code> </p>
-<p>Starting from version 58, Chrome deprecates Subject CN matching. It means, that you need to know how Subject Alternative Name configuration is done.</p>
+<p>Starting from version 58, Chrome deprecates Subject CN matching. It means that you need to know how Subject Alternative Name configuration is done.</p>
 </aside>
 <aside class="special"><p><strong>For Details</strong>, see: https://textslashplain.com/2017/03/10/chrome-deprecates-subject-cn-matching/</p>
 </aside>

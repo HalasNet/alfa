@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2019-06-28T11:14:57Z",
+  "updated": "2019-07-02T18:24:07Z",
   "id": "edge-dev-kvm-cache-firestore",
   "duration": 55,
   "title": "KVM Cache Firestore Target Server",
@@ -22,6 +22,6 @@
     "web"
   ],
   "feedback": "https://github.com/apigee/alfa/issues/new?title=[edge-dev-kvm-cache-firestore]:\u0026labels[]=content-platform\u0026labels[]=apigee",
-  "ga": "UA-########-#",
+  "ga": "UA-143092999-1",
   "url": "edge-dev-kvm-cache-firestore"
 }
